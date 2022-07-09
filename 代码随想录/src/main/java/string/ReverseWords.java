@@ -28,7 +28,7 @@ import java.util.List;
 public class ReverseWords {
 
     public static void main(String[] args) {
-        String reverseWords = new ReverseWords().reverseWords("  hello world! ");
+        String reverseWords = new ReverseWords().reverseWords2("a good   example");
         System.out.println("reverseWords => " + reverseWords);
     }
 
@@ -41,6 +41,68 @@ public class ReverseWords {
         Collections.reverse(wordList); //reverse(List<?> list) 可以对List进行逆序排列
         return String.join(" ", wordList);
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 不使用java内置的方法
+     * <p>
+     * * 1.去除首尾以及中间多余空格
+     * * 2.反转整个字符串
+     * * 3.反转各个单词
+     */
+    public String reverseWords2(String s) {
+        // 1.去除首尾以及中间多余空格
+        StringBuilder sb = removeSpace(s);
+        // 2.反转整个字符串
+        reverseString(sb, 0, sb.length() - 1);
+        // 3.反转各个单词
+        reverseEachWord(sb);
+        return sb.toString();
+    }
+
+    private StringBuilder removeSpace(String s) {
+        int start = 0;
+        int end = s.length() - 1;
+        while (s.charAt(start) == ' ') start++;
+        while (s.charAt(end) == ' ') end--;
+        StringBuilder sb = new StringBuilder();
+        while (start <= end) {
+            char c = s.charAt(start);
+            if (c != ' ' || sb.charAt(sb.length() - 1) != ' ') {
+                sb.append(c);
+            }
+            start++;
+        }
+        return sb;
+    }
+
+    private void reverseString(StringBuilder sb, int start, int end) {
+        while (start < end) {
+            char temp = sb.charAt(start);
+            sb.setCharAt(start, sb.charAt(end));
+            sb.setCharAt(end, temp);
+            start++;
+            end--;
+        }
+    }
+
+    private void reverseEachWord(StringBuilder sb) {
+        int start = 0;
+        int end = 1;
+        int n = sb.length();
+
+        while (start < n) {
+            while (end < n && sb.charAt(end) != ' ') {
+                end++;
+            }
+            reverseString(sb, start, end - 1);
+            start = end + 1;
+            end = start + 1;
+        }
+    }
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -49,7 +111,7 @@ public class ReverseWords {
      * ②遍历 " eulb si yks eht"，每次先对某个单词进行反转再移位
      * 这里以第一个单词进行为演示：" eulb si yks eht" ==反转=> " blue si yks eht" ==移位=> "blue si yks eht"
      */
-    public String reverseWords(String s) {
+    public String reverseWords3(String s) {
         //步骤1：字符串整体反转（此时其中的单词也都反转了）
         char[] initialArr = s.toCharArray();
         reverse(initialArr, 0, s.length() - 1);
